@@ -6,6 +6,8 @@ class Textbox extends StatelessWidget {
   final Icon? icon;
   final TextEditingController controller;
   final Icon? suffixIcon;
+  final Widget? suffix;
+  final String? Function(String?)? validator;
   final String hintText;
   final double width;
   final double height;
@@ -14,11 +16,13 @@ class Textbox extends StatelessWidget {
       {super.key,
       this.icon,
       this.suffixIcon,
+      this.suffix,
       required this.hintText,
       required this.width,
       required this.height,
       this.obscureText = false,
-      required this.controller});
+      required this.controller,
+      this.validator});
 
   @override
   Widget build(BuildContext context) {
@@ -32,6 +36,7 @@ class Textbox extends StatelessWidget {
               borderRadius: BorderRadius.all(Radius.circular(12.r)),
               border: Border.all(style: BorderStyle.none)),
           child: TextFormField(
+            validator: validator ?? (value) => null,
             obscureText: obscureText,
             controller: controller,
             decoration: InputDecoration(
@@ -50,6 +55,7 @@ class Textbox extends StatelessWidget {
                 enabledBorder: OutlineInputBorder(
                     borderSide: const BorderSide(style: BorderStyle.none),
                     borderRadius: BorderRadius.all(Radius.circular(12.r))),
+                suffix: suffix,
                 suffixIcon: suffixIcon),
           ),
         ),

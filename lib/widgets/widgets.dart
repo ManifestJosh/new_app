@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:new_app/utils/my_colors.dart';
 
+import '../utils/app_spacing.dart';
+
 class DropdownList extends StatefulWidget {
   const DropdownList(
       {super.key,
@@ -76,6 +78,102 @@ class _DropdownListState extends State<DropdownList> {
           ),
         ],
       ),
+    );
+  }
+}
+
+class box1 extends StatelessWidget {
+  const box1({
+    super.key,
+    required this.width,
+    required this.height,
+    required this.data,
+  });
+  final double width;
+  final double height;
+  final String data;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: width.w,
+      height: height.h,
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.centerRight,
+          end: Alignment.centerLeft,
+          colors: [MyColors.secondary_colors, MyColors.secondary_color],
+        ),
+        borderRadius: BorderRadius.all(Radius.circular(16.r)),
+      ),
+      child: Center(
+        child: Text(
+          data,
+          style: TextStyle(
+              fontFamily: 'poppins',
+              fontSize: 12.sp,
+              fontWeight: FontWeight.w500,
+              color: MyColors.ScreenBackground_color),
+        ),
+      ),
+    );
+  }
+}
+
+class box2 extends StatelessWidget {
+  const box2({
+    super.key,
+    required this.width,
+    required this.height,
+    required this.widget,
+    this.color,
+    this.gradient,
+    required this.onTap,
+  });
+  final double width;
+  final double height;
+  final Gradient? gradient;
+  final Widget widget;
+  final Color? color;
+  final Function() onTap;
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: onTap,
+      child: Container(
+        width: width.w,
+        height: height.h,
+        decoration: BoxDecoration(
+          gradient: gradient,
+          color: color,
+          borderRadius: BorderRadius.all(Radius.circular(12.r)),
+        ),
+        child: Center(
+          child: widget,
+        ),
+      ),
+    );
+  }
+}
+
+class box_4 extends StatelessWidget {
+  const box_4({
+    super.key,
+    required this.widget,
+  });
+
+  final Widget widget;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: AppSpacing.allSm,
+      width: 130.w,
+      height: 60.h,
+      decoration: BoxDecoration(
+          color: MyColors.ScreenBackground_color,
+          borderRadius: BorderRadius.all(Radius.circular(16.r))),
+      child: widget,
     );
   }
 }

@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:new_app/widgets/widgets.dart';
 
 import '../controllers/auth_controller.dart';
-import '../screens/auth_page.dart';
+import '../screens/Auth_screens/auth_page.dart';
 import '../utils/app_spacing.dart';
 import '../utils/my_colors.dart';
 import 'Buttons.dart';
@@ -96,6 +97,7 @@ class name_n_notification_tab extends StatelessWidget {
             size: 15.sp,
           ),
           color: MyColors.border_color,
+          onTap: () {},
         )
       ],
     );

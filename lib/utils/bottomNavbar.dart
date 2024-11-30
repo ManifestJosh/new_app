@@ -7,11 +7,11 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 import 'package:new_app/controllers/bottom_navController.dart';
-import 'package:new_app/screens/HomePage/homepage.dart';
+import 'package:new_app/screens/main_app_screens/HomePage/homepage.dart';
 import 'package:new_app/utils/my_colors.dart';
 
-import '../screens/ActivityPage/activity_page.dart';
-import '../screens/ProfilePage/profile.dart';
+import '../screens/main_app_screens/ActivityPage/activity_page.dart';
+import '../screens/main_app_screens/ProfilePage/profile.dart';
 
 class BottomNavbar extends StatefulWidget {
   const BottomNavbar({super.key});

@@ -3,7 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:new_app/controllers/auth_controller.dart';
-import 'package:new_app/screens/HomePage/homepage.dart';
+import 'package:new_app/screens/main_app_screens/HomePage/homepage.dart';
 import 'package:new_app/utils/bottomNavbar.dart';
 import 'package:new_app/widgets/Buttons.dart';
 

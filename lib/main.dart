@@ -1,17 +1,29 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:new_app/screens/welcome.dart';
+import 'package:new_app/screens/Auth_screens/login.dart';
+import 'package:new_app/screens/Auth_screens/welcome.dart';
 import 'package:new_app/utils/themeData.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-void main() {
-  // WidgetsFlutterBinding.ensureInitialized();
-  // await Firebase.initializeApp();
-  runApp(const MyApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  final SharedPreferences prefs = await SharedPreferences.getInstance();
+  final bool isLoggedIn = prefs.getBool('isLoggedIn') ?? false;
+  final bool isSignedUp = prefs.getBool('isSignedUp') ?? false;
+
+  await Firebase.initializeApp();
+  runApp(MyApp(
+    isSignedUp: isSignedUp,
+    isLoggedIn: isLoggedIn,
+  ));
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  final bool isSignedUp;
+  final bool isLoggedIn;
+  const MyApp({super.key, required this.isSignedUp, required this.isLoggedIn});
 
   @override
   Widget build(BuildContext context) {
@@ -21,10 +33,9 @@ class MyApp extends StatelessWidget {
       splitScreenMode: true,
       builder: (context, child) {
         return GetMaterialApp(
-          debugShowCheckedModeBanner: false,
-          theme: appTheme,
-          home: const Welcome(),
-        );
+            debugShowCheckedModeBanner: false,
+            theme: appTheme,
+            home: isSignedUp ? LoginPage() : Welcome());
       },
     );
   }

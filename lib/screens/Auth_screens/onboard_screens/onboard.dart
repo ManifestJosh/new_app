@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
-import 'package:new_app/controllers/onboard_controller.dart';
-import 'package:new_app/screens/signUp.dart';
+import 'package:new_app/screens/Auth_screens/onboard_screens/onboard_controller.dart';
+import 'package:new_app/screens/Auth_screens/signUp.dart';
 import 'package:new_app/utils/app_spacing.dart';
 import 'package:new_app/utils/my_colors.dart';
 
