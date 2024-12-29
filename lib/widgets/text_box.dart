@@ -63,3 +63,89 @@ class Textbox extends StatelessWidget {
     );
   }
 }
+
+class Passwordbox extends StatefulWidget {
+  final Icon? icon;
+  final TextEditingController controller;
+  final Icon? suffixIcon;
+  final Widget? suffix;
+  final String? Function(String?)? validator;
+  final String hintText;
+  final double width;
+  final double height;
+
+  const Passwordbox(
+      {super.key,
+      this.icon,
+      this.suffixIcon,
+      this.suffix,
+      required this.hintText,
+      required this.width,
+      required this.height,
+      required this.controller,
+      this.validator});
+
+  @override
+  State<Passwordbox> createState() => _PasswordboxState();
+}
+
+class _PasswordboxState extends State<Passwordbox> {
+  bool _obscureText = false;
+  void _togglePasswordVisibility() {
+    setState(() {
+      _obscureText = !_obscureText;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Container(
+          width: widget.width.w,
+          height: widget.height.h,
+          decoration: BoxDecoration(
+              color: MyColors.border_color,
+              borderRadius: BorderRadius.all(Radius.circular(12.r)),
+              border: Border.all(style: BorderStyle.none)),
+          child: TextFormField(
+            validator: widget.validator ?? (value) => null,
+            obscureText: _obscureText,
+            controller: widget.controller,
+            decoration: InputDecoration(
+              contentPadding:
+                  EdgeInsets.symmetric(vertical: 10.0.h, horizontal: 20.w),
+              prefixIcon: widget.icon,
+              hintText: widget.hintText,
+              hintStyle: TextStyle(
+                  fontFamily: 'poppins',
+                  fontSize: 12.sp,
+                  fontWeight: FontWeight.w400,
+                  color: Colors.grey.shade500),
+              focusedBorder: OutlineInputBorder(
+                  borderSide: const BorderSide(style: BorderStyle.none),
+                  borderRadius: BorderRadius.all(Radius.circular(12.r))),
+              enabledBorder: OutlineInputBorder(
+                  borderSide: const BorderSide(style: BorderStyle.none),
+                  borderRadius: BorderRadius.all(Radius.circular(12.r))),
+              suffix: GestureDetector(
+                onTap: _togglePasswordVisibility,
+                child: _obscureText
+                    ? Icon(
+                        Icons.visibility_outlined,
+                        color: Colors.grey,
+                        size: 18.sp,
+                      )
+                    : Icon(
+                        Icons.visibility_off_outlined,
+                        color: Colors.grey,
+                        size: 18.sp,
+                      ),
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}

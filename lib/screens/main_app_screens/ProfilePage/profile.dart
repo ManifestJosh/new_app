@@ -102,13 +102,15 @@ class _ProfileState extends State<Profile> {
               Row(
                 children: [
                   box_5(
-                    data: '${authController.height} cm',
+                    data: '${authController.height.value} m',
                     data2: 'Height',
                   ),
                   20.horizontalSpace,
-                  box_5(data: '${authController.weight} Kg', data2: 'Weight'),
+                  box_5(
+                      data: '${authController.weight.value} Kg',
+                      data2: 'Weight'),
                   20.horizontalSpace,
-                  box_5(data: '${authController.age}yo', data2: 'Age')
+                  box_5(data: '${authController.age.value}yo', data2: 'Age')
                 ],
               ),
               30.verticalSpace,

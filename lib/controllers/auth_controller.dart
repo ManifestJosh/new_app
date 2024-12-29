@@ -1,11 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
+import 'package:get/get_rx/get_rx.dart';
 
 class AuthController extends GetxController {
   var name = ''.obs;
   var last_name = ''.obs;
-  var height = ''.obs;
-  var weight = ''.obs;
+  RxDouble height = 0.0.obs;
+  RxDouble weight = 0.0.obs;
   var age = 0.obs;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
@@ -18,11 +19,12 @@ class AuthController extends GetxController {
       if (snapshot.exists) {
         name.value = snapshot['firstName'];
         last_name.value = snapshot['lastName'];
-        weight.value = snapshot['Weight'];
-        height.value = snapshot['Height'];
-        String dobString = snapshot['dob'];
-        DateTime dob = DateTime.parse(dobString);
+        weight.value = (snapshot['Weight'] as num).toDouble();
+        height.value = (snapshot['Height'] as num).toDouble();
+        Timestamp dobString = snapshot['dob'];
+        DateTime dob = dobString.toDate();
         calculateAge(dob);
+        print('Name: ${name.value}');
       } else {
         print("No such document!");
       }

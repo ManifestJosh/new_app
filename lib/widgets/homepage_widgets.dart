@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:get/get.dart';
 import 'package:new_app/widgets/widgets.dart';
 
 import '../controllers/auth_controller.dart';
@@ -12,7 +13,9 @@ import 'Buttons.dart';
 class Bmi_box extends StatelessWidget {
   const Bmi_box({
     super.key,
+    required this.authController,
   });
+  final AuthController authController;
 
   @override
   Widget build(BuildContext context) {
@@ -46,15 +49,30 @@ class Bmi_box extends StatelessWidget {
           30.horizontalSpace,
           Stack(
             children: [
-              SvgPicture.asset('assets/vectors/bmi.svg',
-                  width: 116.w, height: 116.h),
+              Image.asset(
+                'assets/images/bmi2.png',
+                width: 120.w,
+                height: 120.h,
+              ),
               Positioned(
-                  top: 22.h,
-                  right: 30.w,
-                  child: Text(
-                    '35.1',
+                  top: 0.h,
+                  right: 0.w,
+                  child: SvgPicture.asset('assets/vectors/bmi.svg')),
+              Positioned(
+                top: 32.h,
+                right: 32.w,
+                child: Obx(() {
+                  double weight = authController.weight.value.toDouble();
+                  double height = authController.height.value.toDouble();
+
+                  double bmi = height != 0 ? weight / (height * height) : 0.0;
+
+                  return Text(
+                    bmi.toStringAsFixed(2),
                     style: Theme.of(context).textTheme.displayLarge,
-                  )),
+                  );
+                }),
+              ),
             ],
           )
         ],
@@ -77,18 +95,19 @@ class name_n_notification_tab extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
               'Welcome Back,',
               style: Theme.of(context).textTheme.displayMedium,
             ),
             Text(
-              '${authController.name} ${authController.last_name}',
+              '${authController.name.value} ${authController.last_name.value}',
               style: Theme.of(context).textTheme.headlineSmall,
             ),
           ],
         ),
-        180.horizontalSpace,
+        80.horizontalSpace,
         box2(
           width: 40,
           height: 40,

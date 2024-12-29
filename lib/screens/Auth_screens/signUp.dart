@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:new_app/controllers/checkbox_controler.dart';
-import 'package:new_app/screens/main_app_screens/HomePage/homepage.dart';
 import 'package:new_app/screens/Auth_screens/auth_page.dart';
 import 'package:new_app/screens/Auth_screens/login.dart';
 import 'package:new_app/service/Auth.dart';
@@ -11,6 +10,7 @@ import 'package:new_app/utils/app_spacing.dart';
 import 'package:new_app/utils/my_colors.dart';
 import 'package:new_app/widgets/Buttons.dart';
 import 'package:new_app/widgets/text_box.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SignUpPage extends StatefulWidget {
   const SignUpPage({super.key});
@@ -20,8 +20,6 @@ class SignUpPage extends StatefulWidget {
 }
 
 class _SignUpPageState extends State<SignUpPage> {
-  final TextEditingController first_name = TextEditingController();
-  final TextEditingController last_name = TextEditingController();
   final TextEditingController emailcontroller = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   final CheckboxController checkboxController = Get.put(CheckboxController());
@@ -54,42 +52,6 @@ class _SignUpPageState extends State<SignUpPage> {
                     ),
                     20.verticalSpace,
                     Textbox(
-                      icon: Icon(
-                        Icons.person_2_outlined,
-                        color: Colors.grey,
-                        size: 18.sp,
-                      ),
-                      hintText: 'First Name',
-                      width: 315,
-                      height: 48,
-                      controller: first_name,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter your Name';
-                        }
-                        return null;
-                      },
-                    ),
-                    10.verticalSpace,
-                    Textbox(
-                      icon: Icon(
-                        Icons.person_outline,
-                        color: Colors.grey,
-                        size: 18.sp,
-                      ),
-                      hintText: 'Last Name',
-                      width: 315,
-                      height: 48,
-                      controller: last_name,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter your Last Name';
-                        }
-                        return null;
-                      },
-                    ),
-                    10.verticalSpace,
-                    Textbox(
                         icon: Icon(
                           Icons.mail_outline_rounded,
                           color: Colors.grey,
@@ -109,9 +71,8 @@ class _SignUpPageState extends State<SignUpPage> {
                         },
                         controller: emailcontroller),
                     10.verticalSpace,
-                    Textbox(
+                    Passwordbox(
                       hintText: 'Password',
-                      obscureText: true,
                       width: 315,
                       height: 48,
                       controller: passwordController,
@@ -164,13 +125,15 @@ class _SignUpPageState extends State<SignUpPage> {
                           if (_formKey.currentState!.validate()) {
                             try {
                               final user = await auth.signUp(
-                                first_name.text.trim(),
-                                last_name.text.trim(),
                                 emailcontroller.text.trim(),
                                 passwordController.text.trim(),
                               );
 
                               if (user != null) {
+                                SharedPreferences prefs =
+                                    await SharedPreferences.getInstance();
+                                await prefs.setString('uid', user.uid);
+
                                 Get.snackbar(
                                   'Success',
                                   'Account created Successfully',

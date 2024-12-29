@@ -35,7 +35,7 @@ class MyApp extends StatelessWidget {
         return GetMaterialApp(
             debugShowCheckedModeBanner: false,
             theme: appTheme,
-            home: isSignedUp ? LoginPage() : Welcome());
+            home: isSignedUp ? const LoginPage() : const Welcome());
       },
     );
   }

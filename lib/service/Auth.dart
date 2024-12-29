@@ -12,8 +12,6 @@ class Auth {
   Stream<User?> get authStateChanges => _firebaseAuth.authStateChanges();
 
   Future<User?> signUp(
-    String firstName,
-    String lastName,
     String email,
     String password,
   ) async {
@@ -23,22 +21,11 @@ class Auth {
         email: email,
         password: password,
       );
-      User? user = userCredential.user;
 
-      if (user != null) {
-        await _firestore.collection('users').doc(user.uid).set({
-          'uid': user.uid,
-          'firstName': firstName,
-          'lastName': lastName,
-          'email': email,
-          'createdAt': DateTime.now(),
-        });
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      await prefs.setBool('isSignedUp', true);
 
-        await user.updateDisplayName("$firstName $lastName");
-        SharedPreferences prefs = await SharedPreferences.getInstance();
-        await prefs.setBool('isSignedUp', true);
-      }
-      return user;
+      return userCredential.user;
     } catch (e) {
       throw Exception(e.toString());
     }
@@ -67,12 +54,14 @@ class Auth {
     }
   }
 
-  Future<void> userDetails(
-      String gender, DateTime dob, String weight, String height) async {
+  Future<void> userDetails(String firstName, String lastName, String gender,
+      DateTime dob, double weight, double height) async {
     try {
       User? user = currentUser;
       if (user != null) {
         await _firestore.collection('users').doc(user.uid).set({
+          'firstName': firstName,
+          'lastName': lastName,
           'Gender': gender,
           'dob': dob,
           'Weight': weight,

@@ -4,9 +4,11 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:new_app/controllers/auth_controller.dart';
 import 'package:new_app/screens/Auth_screens/auth_page.dart';
+import 'package:new_app/service/api_service.dart';
 import 'package:new_app/utils/app_spacing.dart';
 import 'package:new_app/utils/my_colors.dart';
 import 'package:new_app/widgets/Buttons.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../widgets/homepage_widgets.dart';
 import 'workout.dart';
@@ -20,19 +22,45 @@ class Homepage extends StatefulWidget {
 
 class _HomepageState extends State<Homepage> {
   final AuthController authController = Get.put(AuthController());
+  final WorkoutService workoutService = WorkoutService();
+
+  @override
+  void initState() {
+    super.initState();
+    initializeUserData();
+  }
+
+  Future<void> initializeUserData() async {
+    String userId = await getUid();
+    if (userId.isNotEmpty) {
+      authController.fetchUserData(userId);
+    } else {
+      print("User ID is empty. Cannot fetch user data.");
+    }
+  }
+
+  Future<String> getUid() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    print(prefs);
+    return prefs.getString('uid') ?? '';
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
           child: SingleChildScrollView(
         child: Padding(
-          padding: AppSpacing.horizontalMd,
+          padding: AppSpacing.horizontalLg,
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               20.verticalSpace,
               name_n_notification_tab(authController: authController),
               30.verticalSpace,
-              Bmi_box(),
+              Bmi_box(
+                authController: authController,
+              ),
               30.verticalSpace,
               const Target_box(),
               20.verticalSpace,
@@ -52,10 +80,10 @@ class _HomepageState extends State<Homepage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Fullbody Workout',
+                        "WorkOut for different \nBodyPart",
                         style: Theme.of(context).textTheme.titleSmall,
                       ),
-                      40.verticalSpace,
+                      20.verticalSpace,
                       InkWell(
                         onTap: () {
                           Get.to(() => WorkOut());

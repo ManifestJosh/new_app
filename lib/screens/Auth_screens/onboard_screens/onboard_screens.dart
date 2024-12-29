@@ -6,7 +6,7 @@ import 'package:new_app/utils/my_colors.dart';
 import 'package:new_app/utils/app_spacing.dart';
 
 import 'onboard_controller.dart';
-import '../signUp.dart';
+import '../signup.dart';
 
 class Onboard_page4 extends StatelessWidget {
   const Onboard_page4({

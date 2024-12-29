@@ -3,16 +3,18 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:new_app/controllers/auth_controller.dart';
-import 'package:new_app/screens/main_app_screens/HomePage/homepage.dart';
 import 'package:new_app/utils/bottomNavbar.dart';
 import 'package:new_app/widgets/Buttons.dart';
 
 class Welcomepage2 extends StatelessWidget {
-  const Welcomepage2({super.key});
+  const Welcomepage2({super.key, required this.firstName, required this.uid});
+  final String firstName;
+  final String uid;
 
   @override
   Widget build(BuildContext context) {
-    final AuthController authController = Get.put(AuthController());
+    // final AuthController authController = Get.put(AuthController());
+
     return Scaffold(
       body: SafeArea(
           child: Stack(
@@ -64,7 +66,7 @@ class Welcomepage2 extends StatelessWidget {
               child: Column(
                 children: [
                   Text(
-                    'Welcome, ${authController.name}',
+                    'Welcome, $firstName',
                     style: Theme.of(context).textTheme.headlineSmall,
                   ),
                   10.verticalSpace,

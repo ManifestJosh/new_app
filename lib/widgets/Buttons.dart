@@ -24,43 +24,33 @@ class Buttons extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: onTap,
-      child: Container(
-        width: width.w,
-        height: height.h,
+      child: Ink(
         decoration: BoxDecoration(
-          boxShadow: [
-            BoxShadow(
-                blurRadius: 5,
-                offset: Offset(0, 10),
-                color: Colors.grey.shade400)
-          ],
+            borderRadius: BorderRadius.all(Radius.circular(36.r))),
+        child: Container(
+          width: width.w,
+          height: height.h,
+          decoration: BoxDecoration(
+            boxShadow: [
+              BoxShadow(
+                  blurRadius: 5,
+                  offset: Offset(0, 10),
+                  color: Colors.grey.shade400)
+            ],
 
-          gradient: MyColors.button_gradient,
-          // border: Border.all(
-          //   color: MyColors.border_color,
-          // ),
-          borderRadius: BorderRadius.all(Radius.circular(36.r)),
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            if (icon != null && isIconBeforeText) ...[
-              icon!,
-            ],
-            5.horizontalSpace,
-            Text(
-              text,
-              style: TextStyle(
-                fontFamily: 'Poppins',
-                fontSize: 16.sp,
-                fontWeight: FontWeight.w700,
-                color: MyColors.ScreenBackground_color,
-              ),
-            ),
-            if (icon != null && !isIconBeforeText) ...[
-              icon!,
-            ],
-            if (icon == null && !isIconBeforeText)
+            gradient: MyColors.button_gradient,
+            // border: Border.all(
+            //   color: MyColors.border_color,
+            // ),
+            borderRadius: BorderRadius.all(Radius.circular(36.r)),
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              if (icon != null && isIconBeforeText) ...[
+                icon!,
+              ],
+              5.horizontalSpace,
               Text(
                 text,
                 style: TextStyle(
@@ -70,7 +60,21 @@ class Buttons extends StatelessWidget {
                   color: MyColors.ScreenBackground_color,
                 ),
               ),
-          ],
+              if (icon != null && !isIconBeforeText) ...[
+                icon!,
+              ],
+              if (icon == null && !isIconBeforeText)
+                Text(
+                  text,
+                  style: TextStyle(
+                    fontFamily: 'Poppins',
+                    fontSize: 16.sp,
+                    fontWeight: FontWeight.w700,
+                    color: MyColors.ScreenBackground_color,
+                  ),
+                ),
+            ],
+          ),
         ),
       ),
     );
