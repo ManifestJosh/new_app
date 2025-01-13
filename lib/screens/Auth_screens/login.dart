@@ -56,7 +56,7 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                   hintText: 'Email',
                   width: 315,
-                  height: 48,
+                  height: 58,
                   controller: emailcontroller,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
@@ -72,7 +72,7 @@ class _LoginPageState extends State<LoginPage> {
                 Passwordbox(
                   hintText: 'Password',
                   width: 315,
-                  height: 48,
+                  height: 58,
                   controller: passwordController,
                   icon: Icon(
                     Icons.lock_outline_rounded,
@@ -132,7 +132,7 @@ class _LoginPageState extends State<LoginPage> {
                             );
                             await authController.fetchUserData(user.uid);
                             String firstName = authController.name.value;
-                            Get.off(() => Welcomepage2(
+                            Get.offAll(() => Welcomepage2(
                                 firstName: firstName, uid: user.uid));
                           }
                         } catch (e) {

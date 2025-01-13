@@ -49,6 +49,10 @@ class Textbox extends StatelessWidget {
                     fontSize: 12.sp,
                     fontWeight: FontWeight.w400,
                     color: Colors.grey.shade500),
+                errorBorder: OutlineInputBorder(
+                    borderSide: const BorderSide(
+                        style: BorderStyle.solid, color: Colors.red),
+                    borderRadius: BorderRadius.all(Radius.circular(12.r))),
                 focusedBorder: OutlineInputBorder(
                     borderSide: const BorderSide(style: BorderStyle.none),
                     borderRadius: BorderRadius.all(Radius.circular(12.r))),
@@ -127,6 +131,10 @@ class _PasswordboxState extends State<Passwordbox> {
                   borderRadius: BorderRadius.all(Radius.circular(12.r))),
               enabledBorder: OutlineInputBorder(
                   borderSide: const BorderSide(style: BorderStyle.none),
+                  borderRadius: BorderRadius.all(Radius.circular(12.r))),
+              errorBorder: OutlineInputBorder(
+                  borderSide: const BorderSide(
+                      style: BorderStyle.solid, color: Colors.red),
                   borderRadius: BorderRadius.all(Radius.circular(12.r))),
               suffix: GestureDetector(
                 onTap: _togglePasswordVisibility,

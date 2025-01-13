@@ -199,7 +199,7 @@ class _AuthPageState extends State<AuthPage> {
                               weight,
                               height,
                             );
-                            Get.to(() => const LoginPage());
+                            Get.off(() => const LoginPage());
                           },
                           icon: Icon(
                             Icons.arrow_forward_ios,

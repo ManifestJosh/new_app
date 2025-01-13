@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -64,26 +65,60 @@ class _WorkoutpageState extends State<Workoutpage> {
                         final bodyPartExercise =
                             _controller.fetchExercises[index];
                         final gifUrl = bodyPartExercise['gifUrl'];
-                        return ListTile(
-                          title: Text(
-                            bodyPartExercise['name'],
-                            style: Theme.of(context).textTheme.bodyMedium,
-                          ),
-                          trailing: Row(
+                        print('GifUrl $gifUrl');
+                        return Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 16.0.w),
+                          child: Column(
                             children: [
-                              Image.network(
-                                gifUrl,
+                              InkWell(
+                                onTap: () {
+                                  Get.to(() => ExerciseDisplay(
+                                      gifUrl: gifUrl,
+                                      bodyPartExercise: bodyPartExercise));
+                                },
+                                child: Container(
+                                  padding: EdgeInsets.all(16.sp),
+                                  width: double.maxFinite,
+                                  height: 250.h,
+                                  decoration: BoxDecoration(
+                                      color: Colors.grey.shade200,
+                                      borderRadius: BorderRadius.all(
+                                          Radius.circular(18.r))),
+                                  child: Column(children: [
+                                    CachedNetworkImage(
+                                      width: double.maxFinite,
+                                      height: 170.h,
+                                      imageUrl: gifUrl,
+                                      placeholder: (context, url) =>
+                                          CircularProgressIndicator(),
+                                      errorWidget: (context, url, error) =>
+                                          Icon(
+                                        Icons.error,
+                                        size: 18.sp,
+                                      ),
+                                    ),
+                                    Row(
+                                      children: [
+                                        Text(
+                                          bodyPartExercise['name'],
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .bodyMedium,
+                                        ),
+                                        Spacer(),
+                                        Icon(
+                                          Icons.arrow_forward_ios,
+                                          color: Colors.grey,
+                                          size: 18.sp,
+                                        ),
+                                      ],
+                                    ),
+                                  ]),
+                                ),
                               ),
-                              Icon(
-                                Icons.arrow_forward_ios,
-                                color: Colors.grey,
-                                size: 18.sp,
-                              ),
+                              20.verticalSpace
                             ],
                           ),
-                          onTap: () {
-                            Get.to(() => ExerciseDisplay(gifUrl: gifUrl));
-                          },
                         );
                       }));
             })
