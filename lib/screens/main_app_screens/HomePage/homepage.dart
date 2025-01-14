@@ -76,35 +76,46 @@ class _HomepageState extends State<Homepage> {
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.all(Radius.circular(24.r)),
                       color: Colors.blue.shade50),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                  child: Row(
                     children: [
-                      Text(
-                        "WorkOut for different \nBodyPart",
-                        style: Theme.of(context).textTheme.titleSmall,
-                      ),
-                      20.verticalSpace,
-                      InkWell(
-                        onTap: () {
-                          Get.to(() => WorkOut());
-                        },
-                        child: Container(
-                          width: 94.w,
-                          height: 35.h,
-                          decoration: BoxDecoration(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(16.r)),
-                              color: Colors.white),
-                          child: Center(
-                            child: Text(
-                              'View More',
-                              style: TextStyle(
-                                  fontFamily: 'poppins',
-                                  fontSize: 10.sp,
-                                  color: MyColors.primary_color),
-                            ),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "WorkOut for different \nBodyPart",
+                            style: Theme.of(context).textTheme.titleSmall,
                           ),
-                        ),
+                          20.verticalSpace,
+                          InkWell(
+                            onTap: () {
+                              Get.to(() => WorkOut());
+                            },
+                            child: Container(
+                              width: 94.w,
+                              height: 35.h,
+                              decoration: BoxDecoration(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(16.r)),
+                                  color: Colors.white),
+                              child: Center(
+                                child: Text(
+                                  'View More',
+                                  style: TextStyle(
+                                      fontFamily: 'poppins',
+                                      fontSize: 10.sp,
+                                      color: MyColors.primary_color),
+                                ),
+                              ),
+                            ),
+                          )
+                        ],
+                      ),
+                      Spacer(),
+                      Image.asset(
+                        'assets/images/bodybuilder.png',
+                        width: 140.w,
+                        height: 100.h,
+                        fit: BoxFit.contain,
                       )
                     ],
                   ))

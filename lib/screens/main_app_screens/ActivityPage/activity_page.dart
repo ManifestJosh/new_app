@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -345,34 +346,47 @@ class _ActivityPageState extends State<ActivityPage> {
                         final task = taskController.missedTasks[index];
                         return Column(
                           children: [
-                            Container(
-                              width: 349.w,
-                              height: 80.h,
-                              decoration: BoxDecoration(
-                                color: MyColors.ScreenBackground_color,
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: MyColors.light_grey,
-                                    blurRadius: 5.r,
-                                    offset: const Offset(0, 3),
-                                  )
-                                ],
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(16.r)),
-                              ),
-                              child: ListTile(
-                                title: Text(
-                                  task['title'] ?? 'No title',
-                                  style: Theme.of(context).textTheme.bodyMedium,
+                            Dismissible(
+                              key: Key(task['docId']),
+                              onDismissed: (direction) async {
+                                await FirebaseFirestore.instance
+                                    .collection('missedTasks')
+                                    .doc(task['id'])
+                                    .delete();
+
+                                taskController.missedTasks.removeAt(index);
+                              },
+                              child: Container(
+                                width: 349.w,
+                                height: 80.h,
+                                decoration: BoxDecoration(
+                                  color: MyColors.ScreenBackground_color,
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: MyColors.light_grey,
+                                      blurRadius: 5.r,
+                                      offset: const Offset(0, 3),
+                                    )
+                                  ],
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(16.r)),
                                 ),
-                                subtitle: Text(
-                                  task['description'] ?? 'No description',
-                                  style: Theme.of(context).textTheme.bodySmall,
-                                ),
-                                trailing: Icon(
-                                  Icons.delete_forever,
-                                  color: Colors.grey,
-                                  size: 19.sp,
+                                child: ListTile(
+                                  title: Text(
+                                    task['title'] ?? 'No title',
+                                    style:
+                                        Theme.of(context).textTheme.bodyMedium,
+                                  ),
+                                  subtitle: Text(
+                                    task['description'] ?? 'No description',
+                                    style:
+                                        Theme.of(context).textTheme.bodySmall,
+                                  ),
+                                  trailing: Icon(
+                                    Icons.delete_forever,
+                                    color: Colors.grey,
+                                    size: 19.sp,
+                                  ),
                                 ),
                               ),
                             ),

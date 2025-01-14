@@ -44,7 +44,7 @@ class _WorkoutpageState extends State<Workoutpage> {
             Obx(() {
               if (_controller.isLoading.value) {
                 return Center(
-                  child: SpinKitDancingSquare(
+                  child: SpinKitFadingCircle(
                     color: MyColors.primary_color2,
                     size: 70.sp,
                   ),
@@ -86,11 +86,12 @@ class _WorkoutpageState extends State<Workoutpage> {
                                           Radius.circular(18.r))),
                                   child: Column(children: [
                                     CachedNetworkImage(
+                                      fit: BoxFit.fitWidth,
                                       width: double.maxFinite,
                                       height: 170.h,
                                       imageUrl: gifUrl,
                                       placeholder: (context, url) =>
-                                          CircularProgressIndicator(),
+                                          const CircularProgressIndicator(),
                                       errorWidget: (context, url, error) =>
                                           Icon(
                                         Icons.error,

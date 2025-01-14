@@ -38,10 +38,17 @@ class Bmi_box extends StatelessWidget {
                 style: Theme.of(context).textTheme.displayLarge,
               ),
               10.verticalSpace,
-              Text(
-                'You have a normal weight',
-                style: Theme.of(context).textTheme.displaySmall,
-              ),
+              Obx(() {
+                double weight = authController.weight.value.toDouble();
+                double height = authController.height.value.toDouble();
+
+                double bmi = height != 0 ? weight / (height * height) : 0.0;
+
+                return Text(
+                  bmi > 26 ? 'You are OverWeight' : 'You have normal weight',
+                  style: Theme.of(context).textTheme.displaySmall,
+                );
+              }),
               20.verticalSpace,
               Buttons2(width: 95, height: 35, text: 'View More', onTap: () {}),
             ],
