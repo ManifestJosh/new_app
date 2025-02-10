@@ -63,6 +63,12 @@ class _ExerciseDisplayState extends State<ExerciseDisplay> {
                       width: MediaQuery.of(context).size.width,
                       height: 415.h,
                       fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) {
+                        return Image.asset(
+                          'assets/images/placeholder.png',
+                          height: 150.h,
+                        );
+                      },
                     ),
                     Positioned(
                       top: 15.h,

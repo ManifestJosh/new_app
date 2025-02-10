@@ -86,16 +86,39 @@ class _WorkoutpageState extends State<Workoutpage> {
                                           Radius.circular(18.r))),
                                   child: Column(children: [
                                     CachedNetworkImage(
+                                      imageUrl: gifUrl,
+                                      placeholder: (context, url) => Center(
+                                        child: SpinKitFadingCircle(
+                                          color: Theme.of(context).primaryColor,
+                                          size: 50.sp,
+                                        ),
+                                      ),
                                       fit: BoxFit.fitWidth,
                                       width: double.maxFinite,
-                                      height: 170.h,
-                                      imageUrl: gifUrl,
-                                      placeholder: (context, url) =>
-                                          const CircularProgressIndicator(),
+                                      height: 180.h,
                                       errorWidget: (context, url, error) =>
-                                          Icon(
-                                        Icons.error,
-                                        size: 18.sp,
+                                          Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          Image.asset(
+                                            'assets/images/placeholder.png',
+                                            height: 150.h,
+                                          ),
+                                          if (error.toString().contains('429'))
+                                            Padding(
+                                              padding:
+                                                  EdgeInsets.only(top: 8.h),
+                                              child: Text(
+                                                'Too many requests. Please try again later.',
+                                                style: TextStyle(
+                                                  color: Colors.red,
+                                                  fontSize: 12.sp,
+                                                ),
+                                                textAlign: TextAlign.center,
+                                              ),
+                                            ),
+                                        ],
                                       ),
                                     ),
                                     Row(

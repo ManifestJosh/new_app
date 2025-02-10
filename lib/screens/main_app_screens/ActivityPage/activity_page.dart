@@ -89,7 +89,7 @@ class _ActivityPageState extends State<ActivityPage> {
               Container(
                 padding: AppSpacing.allMd,
                 width: 349.w,
-                height: 149.h,
+                height: 159.h,
                 decoration: BoxDecoration(
                     color: Colors.blue.shade50,
                     borderRadius: BorderRadius.all(Radius.circular(24.r))),
@@ -101,7 +101,7 @@ class _ActivityPageState extends State<ActivityPage> {
                           "Today's Target",
                           style: Theme.of(context).textTheme.bodyLarge,
                         ),
-                        150.horizontalSpace,
+                        Spacer(),
                         box2(
                           width: 32,
                           height: 32,
@@ -130,97 +130,130 @@ class _ActivityPageState extends State<ActivityPage> {
                     Obx(() {
                       return SingleChildScrollView(
                         scrollDirection: Axis.horizontal,
-                        child: Row(
-                          children: taskController.dailyTasks.map((task) {
-                            return Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 8.w),
-                              child: GestureDetector(
-                                onTap: () {
-                                  showDialog(
-                                      context: context,
-                                      builder: (context) {
-                                        return AlertDialog(
-                                          contentPadding: EdgeInsets.all(32.sp),
-                                          title: Text(
-                                            task['title'] ?? 'No Title',
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .titleLarge,
-                                          ),
-                                          content: Column(
-                                            mainAxisSize: MainAxisSize.min,
-                                            children: [
-                                              Row(
-                                                children: [
-                                                  Obx(() {
-                                                    return Checkbox.adaptive(
-                                                        value:
-                                                            checkboxController
-                                                                .isChecked
-                                                                .value,
-                                                        onChanged: (newValue) {
-                                                          checkboxController
-                                                              .toggleCheckbox();
-                                                        });
-                                                  }),
-                                                  Text(
-                                                    task['description'] ??
-                                                        'No Description',
+                        child: taskController.dailyTasks.isEmpty
+                            ? Center(
+                                child: Text(
+                                  'No Target for today',
+                                  style: Theme.of(context).textTheme.bodyLarge,
+                                ),
+                              )
+                            : Row(
+                                children: taskController.dailyTasks.map((task) {
+                                  return Padding(
+                                    padding:
+                                        EdgeInsets.symmetric(horizontal: 8.w),
+                                    child: GestureDetector(
+                                      onTap: () {
+                                        showDialog(
+                                            context: context,
+                                            builder: (context) {
+                                              return AlertDialog(
+                                                contentPadding:
+                                                    EdgeInsets.all(32.sp),
+                                                title: SingleChildScrollView(
+                                                  child: Text(
+                                                    task['title'] ?? 'No Title',
                                                     style: Theme.of(context)
                                                         .textTheme
-                                                        .bodyLarge,
-                                                  )
-                                                ],
-                                              ),
-                                              20.verticalSpace,
-                                              Buttons3(
+                                                        .titleLarge,
+                                                  ),
+                                                ),
+                                                content: SizedBox(
                                                   width: double.maxFinite,
-                                                  height: 40,
-                                                  text: 'Done',
-                                                  onTap: () async {
-                                                    _auth.saveDoneTask(
-                                                      task['docId'],
-                                                      task['title'],
-                                                      task['description'],
-                                                    );
-
-                                                    Get.back();
-                                                  })
-                                            ],
-                                          ),
-                                        );
-                                      });
-                                },
-                                child: box_4(
-                                  widget: FittedBox(
-                                    child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          task['title'] ?? 'No Title',
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .bodyLarge,
+                                                  child: SingleChildScrollView(
+                                                    child: Column(
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .start,
+                                                      mainAxisSize:
+                                                          MainAxisSize.min,
+                                                      children: [
+                                                        Row(
+                                                          crossAxisAlignment:
+                                                              CrossAxisAlignment
+                                                                  .start,
+                                                          children: [
+                                                            Obx(() {
+                                                              return Checkbox
+                                                                  .adaptive(
+                                                                value:
+                                                                    checkboxController
+                                                                        .isChecked
+                                                                        .value,
+                                                                onChanged:
+                                                                    (newValue) {
+                                                                  checkboxController
+                                                                      .toggleCheckbox();
+                                                                },
+                                                              );
+                                                            }),
+                                                            Expanded(
+                                                              child: Text(
+                                                                task['description'] ??
+                                                                    'No Description',
+                                                                style: Theme.of(
+                                                                        context)
+                                                                    .textTheme
+                                                                    .bodyLarge,
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                        20.verticalSpace,
+                                                        Buttons3(
+                                                          width:
+                                                              double.maxFinite,
+                                                          height: 40,
+                                                          text: 'Done',
+                                                          onTap: () async {
+                                                            _auth.saveDoneTask(
+                                                              task['id'],
+                                                              task['title'],
+                                                              task[
+                                                                  'description'],
+                                                            );
+                                                            Get.back();
+                                                          },
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ),
+                                              );
+                                            });
+                                      },
+                                      child: box_4(
+                                        widget: Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              task['title'] ?? 'No Title',
+                                              maxLines: 2,
+                                              overflow: TextOverflow.visible,
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .bodyLarge,
+                                            ),
+                                            5.verticalSpace,
+                                            Text(
+                                              task['description'] ??
+                                                  'No Description',
+                                              maxLines: 2,
+                                              overflow: TextOverflow.visible,
+                                              style: Theme.of(context)
+                                                  .textTheme
+                                                  .bodySmall,
+                                            ),
+                                          ],
                                         ),
-                                        5.verticalSpace,
-                                        Text(
-                                          task['description'] ??
-                                              'No Description',
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .bodySmall,
-                                        ),
-                                      ],
+                                      ),
                                     ),
-                                  ),
-                                ),
+                                  );
+                                }).toList(),
                               ),
-                            );
-                          }).toList(),
-                        ),
                       );
                     }),
                   ],

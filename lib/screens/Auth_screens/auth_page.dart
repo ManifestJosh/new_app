@@ -26,6 +26,7 @@ class _AuthPageState extends State<AuthPage> {
   final TextEditingController dobcontroller = TextEditingController();
   final TextEditingController weightcontroller = TextEditingController();
   final TextEditingController heightcontroller = TextEditingController();
+  final GlobalKey<FormState> _formkey = GlobalKey<FormState>();
   final Auth _auth = Auth();
   @override
   Widget build(BuildContext context) {
@@ -58,73 +59,75 @@ class _AuthPageState extends State<AuthPage> {
                     top: 0.43.sh,
                     left: 50.w,
                     right: 50.w,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Text(
-                          'Let’s complete your profile',
-                          style: Theme.of(context).textTheme.headlineSmall,
-                        ),
-                        10.verticalSpace,
-                        Text(
-                          'It will help us to know more about you!',
-                          style: TextStyle(
-                              fontFamily: 'poppins',
-                              fontSize: 12.sp,
-                              fontWeight: FontWeight.w400,
-                              color: MyColors.grey_color),
-                        ),
-                        30.verticalSpace,
-                        Textbox(
-                          icon: Icon(
-                            Icons.person_2_outlined,
-                            color: Colors.grey,
-                            size: 18.sp,
+                    child: Form(
+                      key: _formkey,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Text(
+                            'Let’s complete your profile',
+                            style: Theme.of(context).textTheme.headlineSmall,
                           ),
-                          hintText: 'First Name',
-                          width: 315,
-                          height: 48,
-                          controller: first_name,
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Please enter your Name';
-                            }
-                            return null;
-                          },
-                        ),
-                        10.verticalSpace,
-                        Textbox(
-                          icon: Icon(
-                            Icons.person_outline,
-                            color: Colors.grey,
-                            size: 18.sp,
+                          10.verticalSpace,
+                          Text(
+                            'It will help us to know more about you!',
+                            style: TextStyle(
+                                fontFamily: 'poppins',
+                                fontSize: 12.sp,
+                                fontWeight: FontWeight.w400,
+                                color: MyColors.grey_color),
                           ),
-                          hintText: 'Last Name',
-                          width: 315,
-                          height: 48,
-                          controller: last_name,
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Please enter your Last Name';
-                            }
-                            return null;
-                          },
-                        ),
-                        10.verticalSpace,
-                        DropdownList(
-                          namecontroller: gendercontroller,
-                          items: ['Male', 'Female'],
-                          hinttext: 'Choose Gender',
-                          width: 315,
-                          height: 55,
-                          icon: Icon(
-                            Icons.people_outline,
-                            color: Colors.grey,
-                            size: 18.sp,
+                          30.verticalSpace,
+                          Textbox(
+                            icon: Icon(
+                              Icons.person_2_outlined,
+                              color: Colors.grey,
+                              size: 18.sp,
+                            ),
+                            hintText: 'First Name',
+                            width: 315,
+                            height: 48,
+                            controller: first_name,
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Please enter your Name';
+                              }
+                              return null;
+                            },
                           ),
-                        ),
-                        10.verticalSpace,
-                        Textbox(
+                          10.verticalSpace,
+                          Textbox(
+                            icon: Icon(
+                              Icons.person_outline,
+                              color: Colors.grey,
+                              size: 18.sp,
+                            ),
+                            hintText: 'Last Name',
+                            width: 315,
+                            height: 48,
+                            controller: last_name,
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Please enter your Last Name';
+                              }
+                              return null;
+                            },
+                          ),
+                          10.verticalSpace,
+                          DropdownList(
+                            namecontroller: gendercontroller,
+                            items: ['Male', 'Female'],
+                            hinttext: 'Choose Gender',
+                            width: 315,
+                            height: 55,
+                            icon: Icon(
+                              Icons.people_outline,
+                              color: Colors.grey,
+                              size: 18.sp,
+                            ),
+                          ),
+                          10.verticalSpace,
+                          Textbox(
                             hintText: 'Date of Birth',
                             width: 315,
                             icon: Icon(
@@ -133,86 +136,120 @@ class _AuthPageState extends State<AuthPage> {
                               size: 18.sp,
                             ),
                             height: 55,
-                            controller: dobcontroller),
-                        10.verticalSpace,
-                        Row(
-                          children: [
-                            Textbox(
-                              hintText: 'Your Weight',
-                              width: 232,
-                              height: 55,
-                              controller: weightcontroller,
-                              icon: Icon(
-                                Icons.scale_outlined,
-                                color: Colors.grey,
-                                size: 18.sp,
-                              ),
-                            ),
-                            15.horizontalSpace,
-                            box1(
-                              width: 48,
-                              height: 48,
-                              data: 'KG',
-                            )
-                          ],
-                        ),
-                        10.verticalSpace,
-                        Row(
-                          children: [
-                            Textbox(
-                              hintText: 'Your Height',
-                              width: 232,
-                              height: 55,
-                              controller: heightcontroller,
-                              icon: Icon(
-                                Icons.compare_arrows,
-                                color: Colors.grey,
-                                size: 18.sp,
-                              ),
-                            ),
-                            15.horizontalSpace,
-                            box1(
-                              width: 48,
-                              height: 48,
-                              data: 'CM',
-                            )
-                          ],
-                        ),
-                        20.verticalSpace,
-                        Buttons(
-                          width: 315,
-                          height: 60,
-                          text: 'Next',
-                          onTap: () {
-                            DateFormat formatter = DateFormat('yyyy-MM-dd');
-                            DateTime dob =
-                                formatter.parse(dobcontroller.text.trim());
-                            double weight =
-                                double.parse(weightcontroller.text.trim());
-                            double height =
-                                double.parse(heightcontroller.text.trim());
-                            _auth.userDetails(
-                              first_name.text.trim(),
-                              last_name.text.trim(),
-                              gendercontroller.text.trim(),
-                              dob,
-                              weight,
-                              height,
-                            );
-                            Get.off(() => const LoginPage());
-                          },
-                          icon: Icon(
-                            Icons.arrow_forward_ios,
-                            color: MyColors.ScreenBackground_color,
-                            size: 18.sp,
+                            controller: dobcontroller,
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Please enter your Date of Birth';
+                              }
+                              return null;
+                            },
                           ),
-                          isIconBeforeText: false,
-                        ),
-                        Padding(
-                          padding: EdgeInsets.only(
-                              bottom: MediaQuery.of(context).viewInsets.bottom),
-                        )
-                      ],
+                          10.verticalSpace,
+                          Row(
+                            children: [
+                              Textbox(
+                                hintText: 'Your Weight',
+                                width: 232,
+                                height: 55,
+                                controller: weightcontroller,
+                                icon: Icon(
+                                  Icons.scale_outlined,
+                                  color: Colors.grey,
+                                  size: 18.sp,
+                                ),
+                              ),
+                              15.horizontalSpace,
+                              box1(
+                                width: 48,
+                                height: 48,
+                                data: 'KG',
+                              )
+                            ],
+                          ),
+                          10.verticalSpace,
+                          Row(
+                            children: [
+                              Textbox(
+                                hintText: 'Your Height',
+                                width: 232,
+                                height: 55,
+                                controller: heightcontroller,
+                                icon: Icon(
+                                  Icons.compare_arrows,
+                                  color: Colors.grey,
+                                  size: 18.sp,
+                                ),
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return 'Please enter your height';
+                                  }
+                                  return null;
+                                },
+                              ),
+                              15.horizontalSpace,
+                              box1(
+                                width: 48,
+                                height: 48,
+                                data: 'M',
+                              )
+                            ],
+                          ),
+                          20.verticalSpace,
+                          Buttons(
+                            width: 315,
+                            height: 60,
+                            text: 'Next',
+                            onTap: () {
+                              if (_formkey.currentState!.validate()) {
+                                DateFormat formatter = DateFormat('yyyy-MM-dd');
+                                DateTime dob =
+                                    formatter.parse(dobcontroller.text.trim());
+                                double weight =
+                                    double.parse(weightcontroller.text.trim());
+                                double height =
+                                    double.parse(heightcontroller.text.trim());
+                                if (dob.isAfter(DateTime.now())) {
+                                  Get.snackbar(
+                                    'Error',
+                                    'Please enter a valid date of birth',
+                                    backgroundColor: Colors.red,
+                                    colorText: Colors.white,
+                                  );
+                                  return;
+                                }
+                                Get.dialog(
+                                  const Center(
+                                      child: CircularProgressIndicator(
+                                    color: MyColors.secondary_color,
+                                  )),
+                                  barrierDismissible: false,
+                                );
+                                _auth.userDetails(
+                                  first_name.text.trim(),
+                                  last_name.text.trim(),
+                                  gendercontroller.text.trim(),
+                                  dob,
+                                  weight,
+                                  height,
+                                );
+                                Get.back();
+                                Get.off(() => const LoginPage());
+                              }
+                            },
+                            icon: Icon(
+                              Icons.arrow_forward_ios,
+                              color: MyColors.ScreenBackground_color,
+                              size: 18.sp,
+                            ),
+                            isIconBeforeText: false,
+                          ),
+                          Padding(
+                            padding: EdgeInsets.only(
+                                bottom:
+                                    MediaQuery.of(context).viewInsets.bottom),
+                          )
+                        ],
+                      ),
                     ),
                   )
                 ],

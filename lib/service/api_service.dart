@@ -22,13 +22,28 @@ class WorkoutService {
     }
   }
 
+  Future<List<dynamic>> getMuscles() async {
+    try {
+      Response response = await _dio.get('/api/v1/muscles');
+      print(response.data);
+      if (response.data['success'] == true) {
+        return List<String>.from(
+            response.data['data'].map((item) => item['name']));
+      } else {
+        throw Exception('Failed to fetch body parts');
+      }
+    } catch (e) {
+      return [];
+    }
+  }
+
   Future<List<dynamic>> getBodyWeightExercise(String bodyPartName) async {
     try {
       Response response =
           await _dio.get('/api/v1/bodyparts/$bodyPartName/exercises');
       if (response.data['success'] == true) {
-       
-        return List<Map<String, dynamic>>.from( response.data['data']['exercises']);
+        return List<Map<String, dynamic>>.from(
+            response.data['data']['exercises']);
       } else {
         throw Exception('Failed to fetch body exercise');
       }

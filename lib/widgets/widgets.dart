@@ -169,7 +169,7 @@ class box_4 extends StatelessWidget {
     return Container(
       padding: AppSpacing.allSm,
       width: 130.w,
-      height: 60.h,
+      height: 70.h,
       decoration: BoxDecoration(
           color: MyColors.ScreenBackground_color,
           borderRadius: BorderRadius.all(Radius.circular(16.r))),

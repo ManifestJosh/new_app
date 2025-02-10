@@ -124,10 +124,16 @@ class _SignUpPageState extends State<SignUpPage> {
                         onTap: () async {
                           if (_formKey.currentState!.validate()) {
                             try {
+                              Get.dialog(
+                                const Center(
+                                    child: CircularProgressIndicator()),
+                                barrierDismissible: false,
+                              );
                               final user = await auth.signUp(
                                 emailcontroller.text.trim(),
                                 passwordController.text.trim(),
                               );
+                              Get.back();
 
                               if (user != null) {
                                 SharedPreferences prefs =

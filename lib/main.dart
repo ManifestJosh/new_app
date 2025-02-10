@@ -4,9 +4,14 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:new_app/screens/Auth_screens/login.dart';
 import 'package:new_app/screens/Auth_screens/welcome.dart';
+import 'package:new_app/screens/main_app_screens/HomePage/homepage.dart';
+import 'package:new_app/screens/main_app_screens/HomePage/notification_Page.dart';
+import 'package:new_app/screens/main_app_screens/ProfilePage/notification.dart';
+import 'package:new_app/utils/bottomNavbar.dart';
 import 'package:new_app/utils/themeData.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+final navigatorKey = GlobalKey<NavigatorState>();
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   final SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -14,6 +19,7 @@ void main() async {
   final bool isSignedUp = prefs.getBool('isSignedUp') ?? false;
 
   await Firebase.initializeApp();
+  NotificationService().initNotification;
   runApp(MyApp(
     isSignedUp: isSignedUp,
     isLoggedIn: isLoggedIn,
@@ -34,8 +40,16 @@ class MyApp extends StatelessWidget {
       builder: (context, child) {
         return GetMaterialApp(
             debugShowCheckedModeBanner: false,
+            navigatorKey: navigatorKey,
             theme: appTheme,
-            home: isSignedUp ? const LoginPage() : const Welcome());
+            getPages: [
+              GetPage(name: '/notificationPage', page: () => NotificationPage())
+            ],
+            home: isSignedUp
+                ? isLoggedIn
+                    ? BottomNavbar()
+                    : LoginPage()
+                : const Welcome());
       },
     );
   }

@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_rx/get_rx.dart';
 
 class AuthController extends GetxController {
   var name = ''.obs;
@@ -10,26 +10,58 @@ class AuthController extends GetxController {
   var age = 0.obs;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  // Method to fetch user data from Firestore
   Future<void> fetchUserData(String userId) async {
     try {
       DocumentSnapshot snapshot =
           await _firestore.collection('users').doc(userId).get();
 
       if (snapshot.exists) {
-        name.value = snapshot['firstName'];
-        last_name.value = snapshot['lastName'];
-        weight.value = (snapshot['Weight'] as num).toDouble();
-        height.value = (snapshot['Height'] as num).toDouble();
-        Timestamp dobString = snapshot['dob'];
-        DateTime dob = dobString.toDate();
-        calculateAge(dob);
-        print('Name: ${name.value}');
+        // Safely cast data using Map
+        Map<String, dynamic> data = snapshot.data() as Map<String, dynamic>;
+        Map<String, dynamic>? profile =
+            data['profile'] as Map<String, dynamic>?;
+
+        if (profile != null) {
+          name.value = profile['firstName']?.toString() ?? '';
+          last_name.value = profile['lastName']?.toString() ?? '';
+
+          // Safely handle numeric values
+          if (profile['weight'] != null) {
+            weight.value = (profile['weight'] as num).toDouble();
+          }
+
+          if (profile['height'] != null) {
+            height.value = (profile['height'] as num).toDouble();
+          }
+
+          // Handle date
+          if (profile['dob'] != null) {
+            Timestamp? dobTimestamp = profile['dob'] as Timestamp?;
+            if (dobTimestamp != null) {
+              DateTime dob = dobTimestamp.toDate();
+              calculateAge(dob);
+            }
+          }
+
+          print('Successfully fetched user data:');
+          print('Name: ${name.value}');
+          print('Weight: ${weight.value}');
+          print('Height: ${height.value}');
+        } else {
+          print("Profile data is null");
+        }
       } else {
         print("No such document!");
       }
     } catch (e) {
       print("Error fetching user data: $e");
+
+      Get.snackbar(
+        'Error',
+        'Failed to fetch user data: ${e.toString()}',
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
     }
   }
 

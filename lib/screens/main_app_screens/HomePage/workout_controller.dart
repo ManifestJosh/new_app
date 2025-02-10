@@ -5,9 +5,11 @@ import 'package:new_app/service/api_service.dart';
 class WorkoutController extends GetxController {
   final WorkoutService workoutService = WorkoutService();
   var exercise = <dynamic>[].obs;
+  var muscleExercise = <dynamic>[].obs;
   var fetchExercises = <dynamic>[].obs;
   var isLoading = true.obs;
   Rx<String?> bodyPartName = Rx<String?>(null);
+  Rx<String?> muscleName = Rx<String?>(null);
   @override
   void onInit() {
     super.onInit();
@@ -19,6 +21,21 @@ class WorkoutController extends GetxController {
         });
       }
     });
+  }
+
+  Future<void> fetchedMuscles() async {
+    try {
+      isLoading(true);
+      final fetchedMuscles = await workoutService.getMuscles();
+      muscleExercise.assignAll(fetchedMuscles);
+      if (fetchedMuscles.isNotEmpty) {
+        muscleName.value = fetchedMuscles.first;
+      }
+    } catch (e) {
+      print("Error fetching exercises: $e");
+    } finally {
+      isLoading(false);
+    }
   }
 
   Future<void> fetchBodyPart() async {

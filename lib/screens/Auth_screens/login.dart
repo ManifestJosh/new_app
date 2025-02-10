@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:new_app/screens/Auth_screens/password_reset.dart';
 import 'package:new_app/screens/Auth_screens/signup.dart';
 import 'package:new_app/screens/Auth_screens/welcomepage.dart';
 import 'package:new_app/service/Auth.dart';
@@ -96,7 +97,9 @@ class _LoginPageState extends State<LoginPage> {
                   },
                 ),
                 InkWell(
-                  onTap: () {},
+                  onTap: () {
+                    Get.to(() => PasswordReset());
+                  },
                   child: Text(
                     'Forgot your password? ',
                     style: TextStyle(
@@ -118,11 +121,15 @@ class _LoginPageState extends State<LoginPage> {
                     onTap: () async {
                       if (formkey.currentState!.validate()) {
                         try {
+                          Get.dialog(
+                            const Center(child: CircularProgressIndicator()),
+                            barrierDismissible: false,
+                          );
                           final user = await _auth.signIn(
                             emailcontroller.text.trim(),
                             passwordController.text.trim(),
                           );
-
+                          Get.back();
                           if (user != null) {
                             Get.snackbar(
                               'Success',

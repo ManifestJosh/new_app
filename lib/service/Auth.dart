@@ -5,6 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:new_app/controllers/task_controller.dart';
+import 'package:new_app/screens/Auth_screens/login.dart';
 import 'package:new_app/utils/my_colors.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -25,11 +26,38 @@ class Auth {
         password: password,
       );
 
+      // Create user document with initial empty collections
+      await _firestore.collection('users').doc(userCredential.user!.uid).set({
+        'email': email,
+        'createdAt': FieldValue.serverTimestamp(),
+      });
+
+      // Create subcollections for tasks and completed tasks
+      await _firestore
+          .collection('users')
+          .doc(userCredential.user!.uid)
+          .collection('tasks')
+          .doc('placeholder')
+          .set({
+        'placeholder': true,
+        'createdAt': FieldValue.serverTimestamp(),
+      });
+
+      await _firestore
+          .collection('users')
+          .doc(userCredential.user!.uid)
+          .collection('completedTasks')
+          .doc('placeholder')
+          .set({
+        'placeholder': true,
+        'createdAt': FieldValue.serverTimestamp(),
+      });
+
       SharedPreferences prefs = await SharedPreferences.getInstance();
       await prefs.setBool('isSignedUp', true);
 
       return userCredential.user;
-    } catch (e) {
+    } on FirebaseAuthException catch (e) {
       throw Exception(e.toString());
     }
   }
@@ -44,8 +72,24 @@ class Auth {
       SharedPreferences preferences = await SharedPreferences.getInstance();
       await preferences.setBool('isLoggedIn', true);
       return userCredential.user;
-    } catch (e) {
-      throw Exception(e.toString());
+    } on FirebaseAuthException catch (e) {
+      Get.snackbar('Error', '${e.message}');
+    }
+    return null;
+  }
+
+  Future<void> resetPassword(String email) async {
+    try {
+      await _firebaseAuth.sendPasswordResetEmail(email: email);
+      Get.offAll(() => LoginPage());
+      Get.snackbar(
+        'Email Sent',
+        'Check your email for the password reset link.',
+        backgroundColor: MyColors.primary_color,
+        colorText: Colors.white,
+      );
+    } on FirebaseAuthException catch (e) {
+      Get.snackbar('Error', '${e.message}');
     }
   }
 
@@ -62,25 +106,38 @@ class Auth {
     try {
       User? user = currentUser;
       if (user != null) {
-        await _firestore.collection('users').doc(user.uid).set({
-          'firstName': firstName,
-          'lastName': lastName,
-          'Gender': gender,
-          'dob': dob,
-          'Weight': weight,
-          'Height': height,
+        // Update only the profile field in the user document
+        await _firestore.collection('users').doc(user.uid).update({
+          'profile': {
+            'firstName': firstName,
+            'lastName': lastName,
+            'gender': gender,
+            'dob': dob,
+            'weight': weight,
+            'height': height,
+            'lastUpdated': FieldValue.serverTimestamp(),
+          }
         });
+
         Get.snackbar(
           'Successfully Updated',
-          'Your details has been uploaded',
+          'Your profile details have been saved',
           backgroundColor: MyColors.primary_color,
           colorText: Colors.white,
         );
+
+        DocumentSnapshot userDoc =
+            await _firestore.collection('users').doc(user.uid).get();
+        if (userDoc.exists) {
+          print('Profile updated: ${userDoc.data()}');
+        }
+      } else {
+        throw Exception('No user logged in');
       }
     } catch (e) {
       Get.snackbar(
         'Error',
-        e.toString(),
+        'Failed to update profile: ${e.toString()}',
         backgroundColor: MyColors.primary_color,
         colorText: Colors.white,
       );
@@ -89,7 +146,6 @@ class Auth {
 
   void saveTask(String title, String description) async {
     try {
-      // Validate inputs
       if (title.isEmpty || description.isEmpty) {
         Fluttertoast.showToast(
           msg: "Title and description cannot be empty.",
@@ -102,7 +158,6 @@ class Auth {
         return;
       }
 
-      // Get the current user
       User? user = _firebaseAuth.currentUser;
       if (user == null) {
         Fluttertoast.showToast(
@@ -116,18 +171,16 @@ class Auth {
         return;
       }
 
-      // Reference to Firestore collection
-      CollectionReference tasks = _firestore.collection('tasks');
+      // Store tasks in user-specific subcollection
+      CollectionReference userTasks =
+          _firestore.collection('users').doc(user.uid).collection('tasks');
 
-      // Add task data to Firestore
-      await tasks.add({
-        'uid': user.uid, // Associate the task with the user
+      await userTasks.add({
         'title': title,
         'description': description,
-        'timestamp': FieldValue.serverTimestamp(),
+        'createdAt': FieldValue.serverTimestamp(),
       });
 
-      // Notify user of success
       Fluttertoast.showToast(
         msg: "Task added successfully!",
         toastLength: Toast.LENGTH_SHORT,
@@ -137,7 +190,6 @@ class Auth {
         fontSize: 16.0.sp,
       );
     } catch (e) {
-      // Show error toast
       Fluttertoast.showToast(
         msg: "Error adding task: ${e.toString()}",
         toastLength: Toast.LENGTH_SHORT,
@@ -151,7 +203,6 @@ class Auth {
 
   void saveDoneTask(String taskId, String title, String description) async {
     try {
-      // Validate inputs
       if (title.isEmpty || description.isEmpty) {
         Fluttertoast.showToast(
           msg: "Title and description cannot be empty.",
@@ -164,7 +215,6 @@ class Auth {
         return;
       }
 
-      // Get the current user
       User? user = _firebaseAuth.currentUser;
       if (user == null) {
         Fluttertoast.showToast(
@@ -178,12 +228,18 @@ class Auth {
         return;
       }
 
-      // Reference to Firestore collection
-      CollectionReference doneTasks = _firestore.collection('donetasks');
-      DocumentReference taskDoc = _firestore.collection('tasks').doc(taskId);
-      print("Received taskId: $taskId");
+      // Reference to user-specific collections
+      CollectionReference userCompletedTasks = _firestore
+          .collection('users')
+          .doc(user.uid)
+          .collection('completedTasks');
 
-      // Check if the task exists before proceeding
+      DocumentReference taskDoc = _firestore
+          .collection('users')
+          .doc(user.uid)
+          .collection('tasks')
+          .doc(taskId);
+
       DocumentSnapshot taskSnapshot = await taskDoc.get();
       if (!taskSnapshot.exists) {
         Fluttertoast.showToast(
@@ -197,12 +253,10 @@ class Auth {
         return;
       }
 
-      // Add done task data to Firestore
-      await doneTasks.add({
-        'uid': user.uid, // Associate the task with the user
+      await userCompletedTasks.add({
         'title': title,
         'description': description,
-        'completedAt': FieldValue.serverTimestamp(), // Timestamp for completion
+        'completedAt': FieldValue.serverTimestamp(),
       });
 
       await taskDoc.delete();
@@ -210,7 +264,6 @@ class Auth {
       await taskController.fetchDailyTasks();
       await taskController.fetchDoneTasks();
 
-      // Notify user of success
       Fluttertoast.showToast(
         msg: "Task marked as done successfully!",
         toastLength: Toast.LENGTH_SHORT,
@@ -220,7 +273,6 @@ class Auth {
         fontSize: 16.0.sp,
       );
     } catch (e) {
-      // Show error toast
       Fluttertoast.showToast(
         msg: "Error saving done task: ${e.toString()}",
         toastLength: Toast.LENGTH_SHORT,

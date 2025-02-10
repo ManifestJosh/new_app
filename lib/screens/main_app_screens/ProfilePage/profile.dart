@@ -7,6 +7,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 import 'package:new_app/controllers/auth_controller.dart';
+import 'package:new_app/screens/main_app_screens/ProfilePage/edit_page.dart';
 import 'package:new_app/screens/main_app_screens/ProfilePage/profile_controller.dart';
 import 'package:new_app/utils/app_spacing.dart';
 import 'package:new_app/widgets/Buttons.dart';
@@ -86,16 +87,18 @@ class _ProfileState extends State<Profile> {
               10.verticalSpace,
               Row(
                 children: [
-                  CircleAvatar(
-                    radius: 27.5.r,
-                  ),
-                  10.horizontalSpace,
                   Text(
                     '${authController.name} ${authController.last_name}',
                     style: Theme.of(context).textTheme.bodyLarge,
                   ),
                   Spacer(),
-                  Buttons3(width: 83, height: 30, text: 'Edit', onTap: () {})
+                  Buttons3(
+                      width: 83,
+                      height: 30,
+                      text: 'Edit',
+                      onTap: () {
+                        Get.to(() => EditPage());
+                      })
                 ],
               ),
               30.verticalSpace,
@@ -112,26 +115,6 @@ class _ProfileState extends State<Profile> {
                   20.horizontalSpace,
                   box_5(data: '${authController.age.value}yo', data2: 'Age')
                 ],
-              ),
-              30.verticalSpace,
-              Box_6(
-                width: 350.w,
-                height: 260.h,
-                widget: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Account',
-                      style: Theme.of(context).textTheme.titleLarge,
-                    ),
-                    10.verticalSpace,
-                    listbuilder(
-                      icon: profileController.icons,
-                      text: profileController.text,
-                      icons: Icons.arrow_forward_ios,
-                    )
-                  ],
-                ),
               ),
               30.verticalSpace,
               Box_6(
@@ -166,7 +149,29 @@ class _ProfileState extends State<Profile> {
                         }))
                   ],
                 ),
-              )
+              ),
+              30.verticalSpace,
+              Box_6(
+                width: 350.w,
+                height: 260.h,
+                widget: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Account',
+                      style: Theme.of(context).textTheme.titleLarge,
+                    ),
+                    10.verticalSpace,
+                    listbuilder(
+                      icon: profileController.icons,
+                      text: profileController.text,
+                      icons: Icons.arrow_forward_ios,
+                      onTap: profileController.onTap,
+                    )
+                  ],
+                ),
+              ),
+              30.verticalSpace,
             ],
           ),
         ),
@@ -181,10 +186,12 @@ class listbuilder extends StatelessWidget {
     required this.icon,
     required this.text,
     required this.icons,
+    required this.onTap,
   });
   final List icon;
   final List text;
   final IconData icons;
+  final List<Function()> onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -200,6 +207,7 @@ class listbuilder extends StatelessWidget {
                 color: MyColors.primary_color,
                 size: 20.sp,
               ),
+              onTap: onTap[index],
               title: Text(
                 text[index],
                 style: Theme.of(context).textTheme.bodySmall,

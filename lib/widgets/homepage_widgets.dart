@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:new_app/screens/main_app_screens/HomePage/notification_Page.dart';
 import 'package:new_app/widgets/widgets.dart';
 
 import '../controllers/auth_controller.dart';
@@ -99,22 +100,21 @@ class name_n_notification_tab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Welcome Back,',
+              'Welcome,',
               style: Theme.of(context).textTheme.displayMedium,
             ),
             Text(
-              '${authController.name.value} ${authController.last_name.value}',
+              '${authController.name} ${authController.last_name}',
               style: Theme.of(context).textTheme.headlineSmall,
             ),
           ],
         ),
-        80.horizontalSpace,
+        Spacer(),
         box2(
           width: 40,
           height: 40,
@@ -123,7 +123,9 @@ class name_n_notification_tab extends StatelessWidget {
             size: 15.sp,
           ),
           color: MyColors.border_color,
-          onTap: () {},
+          onTap: () {
+            Get.to(() => NotificationPage());
+          },
         )
       ],
     );
