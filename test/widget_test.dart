@@ -16,6 +16,7 @@ void main() {
     await tester.pumpWidget(MyApp(
       isSignedUp: false,
       isLoggedIn: false,
+      uid: '',
     ));
 
     // Verify that our counter starts at 0.

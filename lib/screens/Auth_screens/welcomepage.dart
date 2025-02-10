@@ -86,7 +86,7 @@ class Welcomepage2 extends StatelessWidget {
                   height: 60,
                   text: 'Go to Home',
                   onTap: () {
-                    Get.offAll(BottomNavbar());
+                    Get.offAll(BottomNavbar(uid: uid));
                   }))
         ],
       )),

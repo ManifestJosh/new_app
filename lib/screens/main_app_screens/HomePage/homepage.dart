@@ -16,7 +16,8 @@ import '../../../widgets/homepage_widgets.dart';
 import 'workout.dart';
 
 class Homepage extends StatefulWidget {
-  const Homepage({super.key});
+  final String uid;
+  const Homepage({super.key, required this.uid});
 
   @override
   State<Homepage> createState() => _HomepageState();
@@ -33,7 +34,7 @@ class _HomepageState extends State<Homepage> {
   }
 
   Future<void> initializeUserData() async {
-    String userId = await getUid();
+    String userId = widget.uid;
     if (userId.isNotEmpty) {
       authController.fetchUserData(userId);
     } else {
@@ -98,6 +99,7 @@ class _HomepageState extends State<Homepage> {
                   },
                   text: "Workout with Equipments",
                   image: 'assets/images/equipments.png'),
+              120.verticalSpace,
             ],
           ),
         ),

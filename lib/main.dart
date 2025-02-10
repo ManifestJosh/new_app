@@ -17,19 +17,26 @@ void main() async {
   final SharedPreferences prefs = await SharedPreferences.getInstance();
   final bool isLoggedIn = prefs.getBool('isLoggedIn') ?? false;
   final bool isSignedUp = prefs.getBool('isSignedUp') ?? false;
+  final String uid = prefs.getString('uid') ?? '';
 
   await Firebase.initializeApp();
   NotificationService().initNotification;
   runApp(MyApp(
     isSignedUp: isSignedUp,
     isLoggedIn: isLoggedIn,
+    uid: uid,
   ));
 }
 
 class MyApp extends StatelessWidget {
   final bool isSignedUp;
   final bool isLoggedIn;
-  const MyApp({super.key, required this.isSignedUp, required this.isLoggedIn});
+  final String uid;
+  const MyApp(
+      {super.key,
+      required this.isSignedUp,
+      required this.isLoggedIn,
+      required this.uid});
 
   @override
   Widget build(BuildContext context) {
@@ -47,7 +54,9 @@ class MyApp extends StatelessWidget {
             ],
             home: isSignedUp
                 ? isLoggedIn
-                    ? BottomNavbar()
+                    ? BottomNavbar(
+                        uid: uid,
+                      )
                     : LoginPage()
                 : const Welcome());
       },
