@@ -9,6 +9,7 @@ import 'package:new_app/controllers/checkbox_controler.dart';
 import 'package:new_app/controllers/task_controller.dart';
 import 'package:new_app/screens/Auth_screens/auth_page.dart';
 import 'package:new_app/screens/main_app_screens/ActivityPage/latest_activity.dart';
+import 'package:new_app/screens/main_app_screens/ActivityPage/missed_activities.dart';
 import 'package:new_app/utils/app_spacing.dart';
 import 'package:new_app/utils/my_colors.dart';
 import 'package:new_app/widgets/Buttons.dart';
@@ -35,21 +36,6 @@ class _ActivityPageState extends State<ActivityPage> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: MyColors.ScreenBackground_color,
-        leading: Padding(
-          padding: EdgeInsets.only(left: 16.0.w),
-          child: box2(
-            width: 32,
-            height: 32,
-            widget: Icon(
-              Icons.arrow_back_ios,
-              size: 16.sp,
-            ),
-            color: MyColors.border_color,
-            onTap: () {
-              Get.back();
-            },
-          ),
-        ),
         centerTitle: true,
         title: Text(
           'Activity Tracking',
@@ -231,8 +217,8 @@ class _ActivityPageState extends State<ActivityPage> {
                                           children: [
                                             Text(
                                               task['title'] ?? 'No Title',
-                                              maxLines: 2,
-                                              overflow: TextOverflow.visible,
+                                              maxLines: 1,
+                                              overflow: TextOverflow.ellipsis,
                                               style: Theme.of(context)
                                                   .textTheme
                                                   .bodyLarge,
@@ -241,8 +227,8 @@ class _ActivityPageState extends State<ActivityPage> {
                                             Text(
                                               task['description'] ??
                                                   'No Description',
-                                              maxLines: 2,
-                                              overflow: TextOverflow.visible,
+                                              maxLines: 1,
+                                              overflow: TextOverflow.ellipsis,
                                               style: Theme.of(context)
                                                   .textTheme
                                                   .bodySmall,
@@ -351,7 +337,7 @@ class _ActivityPageState extends State<ActivityPage> {
                   Spacer(),
                   TextButton(
                       onPressed: () {
-                        Get.to(() => LatestActivity());
+                        Get.to(() => MissedActivities());
                       },
                       child: Text(
                         'See more',

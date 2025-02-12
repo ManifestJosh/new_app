@@ -129,8 +129,9 @@ class _LoginPageState extends State<LoginPage> {
                             emailcontroller.text.trim(),
                             passwordController.text.trim(),
                           );
-                          Get.back();
+
                           if (user != null) {
+                            Get.back();
                             Get.snackbar(
                               'Success',
                               'LogIn Successfully',
@@ -141,6 +142,9 @@ class _LoginPageState extends State<LoginPage> {
                             String firstName = authController.name.value;
                             Get.offAll(() => Welcomepage2(
                                 firstName: firstName, uid: user.uid));
+                          } else {
+                            Get.back();
+                            print("Error:");
                           }
                         } catch (e) {
                           Get.snackbar(

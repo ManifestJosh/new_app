@@ -8,6 +8,7 @@ import 'package:get/get.dart';
 import 'package:line_awesome_flutter/line_awesome_flutter.dart';
 import 'package:new_app/controllers/auth_controller.dart';
 import 'package:new_app/screens/main_app_screens/ProfilePage/edit_page.dart';
+import 'package:new_app/screens/main_app_screens/ProfilePage/notification.dart';
 import 'package:new_app/screens/main_app_screens/ProfilePage/profile_controller.dart';
 import 'package:new_app/utils/app_spacing.dart';
 import 'package:new_app/widgets/Buttons.dart';
@@ -33,21 +34,6 @@ class _ProfileState extends State<Profile> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: MyColors.ScreenBackground_color,
-        leading: Padding(
-          padding: EdgeInsets.only(left: 16.0.w),
-          child: box2(
-            width: 32,
-            height: 32,
-            widget: Icon(
-              Icons.arrow_back_ios,
-              size: 16.sp,
-            ),
-            color: MyColors.border_color,
-            onTap: () {
-              Get.back();
-            },
-          ),
-        ),
         centerTitle: true,
         title: Text(
           'Profile ',
@@ -119,7 +105,7 @@ class _ProfileState extends State<Profile> {
               30.verticalSpace,
               Box_6(
                 width: 350.w,
-                height: 115.h,
+                height: 175.h,
                 widget: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -141,12 +127,108 @@ class _ProfileState extends State<Profile> {
                         trailing: Obx(() {
                           return CupertinoSwitch(
                             activeColor: MyColors.secondary_color,
-                            value: switchController.isturnedOn.value,
-                            onChanged: (value) {
-                              switchController.turnOn(value);
-                            },
+                            value:
+                                switchController.isNotificationsEnabled.value,
+                            onChanged: (value) =>
+                                switchController.toggleNotifications(value),
                           );
-                        }))
+                        })),
+                    10.verticalSpace,
+                    ListTile(
+                      leading: Icon(
+                        LineAwesomeIcons.access_alarms,
+                        color: MyColors.primary_color,
+                        size: 20.sp,
+                      ),
+                      onTap: () {
+                        showModalBottomSheet(
+                            context: context,
+                            builder: (c) {
+                              TimeOfDay selectedTime = TimeOfDay.now();
+
+                              return SizedBox(
+                                width: double.infinity,
+                                height: 0.3.sh,
+                                child: Padding(
+                                  padding: EdgeInsets.only(
+                                      top: 20.0.h, left: 16.w, right: 16.w),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        'Set Daily Reminder',
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodyLarge!
+                                            .copyWith(
+                                                fontWeight: FontWeight.bold),
+                                      ),
+                                      10.verticalSpace,
+                                      InkWell(
+                                        onTap: () async {
+                                          final TimeOfDay? picked =
+                                              await showTimePicker(
+                                            context: context,
+                                            initialTime: selectedTime,
+                                          );
+                                          if (picked != null) {
+                                            selectedTime = picked;
+                                            // Schedule the notification
+                                            final notificationService =
+                                                PushNotificationService();
+                                            await notificationService
+                                                .initialize();
+                                            await notificationService
+                                                .scheduleWorkoutReminder(
+                                              hour: picked.hour,
+                                              minute: picked.minute,
+                                            );
+                                            setState(() {
+                                              selectedTime = picked;
+                                            });
+                                            Get.snackbar('Reminder Set',
+                                                'Reminder Set ${picked.format(context)}');
+                                          }
+                                        },
+                                        child: Container(
+                                          padding: EdgeInsets.symmetric(
+                                              vertical: 12.h, horizontal: 16.w),
+                                          decoration: BoxDecoration(
+                                            border:
+                                                Border.all(color: Colors.grey),
+                                            borderRadius:
+                                                BorderRadius.circular(8),
+                                          ),
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Text('Select Time'),
+                                              Icon(Icons.access_time),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              );
+                            });
+                      },
+                      title: Text(
+                        'Set Daily Reminder',
+                        style: Theme.of(context)
+                            .textTheme
+                            .bodyMedium!
+                            .copyWith(color: Colors.grey),
+                      ),
+                      trailing: Icon(
+                        Icons.arrow_forward_ios,
+                        color: Colors.grey,
+                        size: 20.sp,
+                      ),
+                    )
                   ],
                 ),
               ),

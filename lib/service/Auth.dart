@@ -26,30 +26,9 @@ class Auth {
         password: password,
       );
 
-      // Create user document with initial empty collections
+      // Create user document without placeholders in subcollections
       await _firestore.collection('users').doc(userCredential.user!.uid).set({
         'email': email,
-        'createdAt': FieldValue.serverTimestamp(),
-      });
-
-      // Create subcollections for tasks and completed tasks
-      await _firestore
-          .collection('users')
-          .doc(userCredential.user!.uid)
-          .collection('tasks')
-          .doc('placeholder')
-          .set({
-        'placeholder': true,
-        'createdAt': FieldValue.serverTimestamp(),
-      });
-
-      await _firestore
-          .collection('users')
-          .doc(userCredential.user!.uid)
-          .collection('completedTasks')
-          .doc('placeholder')
-          .set({
-        'placeholder': true,
         'createdAt': FieldValue.serverTimestamp(),
       });
 

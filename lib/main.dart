@@ -20,7 +20,7 @@ void main() async {
   final String uid = prefs.getString('uid') ?? '';
 
   await Firebase.initializeApp();
-  NotificationService().initNotification;
+  PushNotificationService().initialize();
   runApp(MyApp(
     isSignedUp: isSignedUp,
     isLoggedIn: isLoggedIn,
