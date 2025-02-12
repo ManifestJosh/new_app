@@ -5,6 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:new_app/controllers/checkbox_controler.dart';
 import 'package:new_app/controllers/task_controller.dart';
 import 'package:new_app/screens/Auth_screens/auth_page.dart';
@@ -187,20 +188,30 @@ class _ActivityPageState extends State<ActivityPage> {
                                                         ),
                                                         20.verticalSpace,
                                                         Buttons3(
-                                                          width:
-                                                              double.maxFinite,
-                                                          height: 40,
-                                                          text: 'Done',
-                                                          onTap: () async {
-                                                            _auth.saveDoneTask(
-                                                              task['id'],
-                                                              task['title'],
-                                                              task[
-                                                                  'description'],
-                                                            );
-                                                            Get.back();
-                                                          },
-                                                        ),
+                                                            width: double
+                                                                .maxFinite,
+                                                            height: 40,
+                                                            text: 'Done',
+                                                            onTap:
+                                                                checkboxController
+                                                                        .isChecked
+                                                                        .value
+                                                                    ? () async {
+                                                                        _auth
+                                                                            .saveDoneTask(
+                                                                          task[
+                                                                              'id'],
+                                                                          task[
+                                                                              'title'],
+                                                                          task[
+                                                                              'description'],
+                                                                        );
+                                                                        checkboxController
+                                                                            .isChecked
+                                                                            .value = false;
+                                                                        Get.back();
+                                                                      }
+                                                                    : () {}),
                                                       ],
                                                     ),
                                                   ),
@@ -273,13 +284,116 @@ class _ActivityPageState extends State<ActivityPage> {
                     ),
                   );
                 } else {
+                  int displayCount = taskController.doneTasks.length > 5
+                      ? 5
+                      : taskController.doneTasks.length;
+                  double itemHeight = 95.h;
+                  double totalHeight = displayCount * itemHeight;
+
                   return SizedBox(
-                    height: 470.h,
+                    height: totalHeight,
                     child: ListView.builder(
                       physics: const NeverScrollableScrollPhysics(),
-                      itemCount: taskController.doneTasks.length,
+                      itemCount: displayCount, // Limit to 5 items
                       itemBuilder: (context, index) {
                         final task = taskController.doneTasks[index];
+                        final Timestamp timestamp =
+                            task['completedAt']; // Firebase Timestamp
+                        final DateTime dateTime =
+                            timestamp.toDate(); // Convert to DateTime
+                        final String completedTime =
+                            DateFormat('dd-MM').format(dateTime);
+
+                        return Column(
+                          children: [
+                            Container(
+                              width: 349.w,
+                              height: 80.h,
+                              decoration: BoxDecoration(
+                                color: MyColors.ScreenBackground_color,
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: MyColors.light_grey,
+                                    blurRadius: 5.r,
+                                    offset: const Offset(0, 3),
+                                  )
+                                ],
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(16.r)),
+                              ),
+                              child: ListTile(
+                                  title: Text(
+                                    task['title'] ?? 'No title',
+                                    style:
+                                        Theme.of(context).textTheme.bodyMedium,
+                                  ),
+                                  subtitle: Text(
+                                    task['description'] ?? 'No description',
+                                    style:
+                                        Theme.of(context).textTheme.bodySmall,
+                                  ),
+                                  trailing: Text(
+                                    completedTime,
+                                    style:
+                                        Theme.of(context).textTheme.bodySmall,
+                                  )),
+                            ),
+                            15.verticalSpace,
+                          ],
+                        );
+                      },
+                    ),
+                  );
+                }
+              }),
+              20.verticalSpace,
+              Row(
+                children: [
+                  Text(
+                    'Missed Activities',
+                    style: Theme.of(context).textTheme.bodyLarge,
+                  ),
+                  Icon(
+                    Icons.close,
+                    size: 24.sp,
+                    color: Colors.red,
+                    weight: 10,
+                  ),
+                  Spacer(),
+                  TextButton(
+                      onPressed: () {
+                        Get.to(() => MissedActivities());
+                      },
+                      child: Text(
+                        'See more',
+                        style: Theme.of(context).textTheme.displayMedium,
+                      ))
+                ],
+              ),
+              15.verticalSpace,
+              Obx(() {
+                if (taskController.missedTasks.isEmpty) {
+                  return Center(
+                    child: Text(
+                      'No Activity found',
+                      style: Theme.of(context).textTheme.bodyMedium,
+                    ),
+                  );
+                } else {
+                  int displayCount = taskController.missedTasks.length > 5
+                      ? 5
+                      : taskController.missedTasks.length;
+                  double itemHeight = 95.h;
+                  double totalHeight = displayCount * itemHeight;
+
+                  return SizedBox(
+                    height:
+                        totalHeight, // Dynamically adjust height based on items
+                    child: ListView.builder(
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemCount: displayCount, // Limit to 5 items
+                      itemBuilder: (context, index) {
+                        final task = taskController.missedTasks[index];
                         return Column(
                           children: [
                             Container(
@@ -321,102 +435,7 @@ class _ActivityPageState extends State<ActivityPage> {
                   );
                 }
               }),
-              20.verticalSpace,
-              Row(
-                children: [
-                  Text(
-                    'Missed Activities',
-                    style: Theme.of(context).textTheme.bodyLarge,
-                  ),
-                  Icon(
-                    Icons.close,
-                    size: 24.sp,
-                    color: Colors.red,
-                    weight: 10,
-                  ),
-                  Spacer(),
-                  TextButton(
-                      onPressed: () {
-                        Get.to(() => MissedActivities());
-                      },
-                      child: Text(
-                        'See more',
-                        style: Theme.of(context).textTheme.displayMedium,
-                      ))
-                ],
-              ),
-              15.verticalSpace,
-              Obx(() {
-                if (taskController.doneTasks.isEmpty) {
-                  return Center(
-                    child: Text(
-                      'No Activity found',
-                      style: Theme.of(context).textTheme.bodyMedium,
-                    ),
-                  );
-                } else {
-                  return SizedBox(
-                    height: 500.h,
-                    child: ListView.builder(
-                      physics: const NeverScrollableScrollPhysics(),
-                      itemCount: taskController
-                          .missedTasks.length, // Ensure dynamic count
-                      itemBuilder: (context, index) {
-                        final task = taskController.missedTasks[index];
-                        return Column(
-                          children: [
-                            Dismissible(
-                              key: Key(task['docId']),
-                              onDismissed: (direction) async {
-                                await FirebaseFirestore.instance
-                                    .collection('missedTasks')
-                                    .doc(task['id'])
-                                    .delete();
-
-                                taskController.missedTasks.removeAt(index);
-                              },
-                              child: Container(
-                                width: 349.w,
-                                height: 80.h,
-                                decoration: BoxDecoration(
-                                  color: MyColors.ScreenBackground_color,
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: MyColors.light_grey,
-                                      blurRadius: 5.r,
-                                      offset: const Offset(0, 3),
-                                    )
-                                  ],
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(16.r)),
-                                ),
-                                child: ListTile(
-                                  title: Text(
-                                    task['title'] ?? 'No title',
-                                    style:
-                                        Theme.of(context).textTheme.bodyMedium,
-                                  ),
-                                  subtitle: Text(
-                                    task['description'] ?? 'No description',
-                                    style:
-                                        Theme.of(context).textTheme.bodySmall,
-                                  ),
-                                  trailing: Icon(
-                                    Icons.delete_forever,
-                                    color: Colors.grey,
-                                    size: 19.sp,
-                                  ),
-                                ),
-                              ),
-                            ),
-                            15.verticalSpace,
-                          ],
-                        );
-                      },
-                    ),
-                  );
-                }
-              }),
+              100.verticalSpace,
             ],
           ),
         ),
